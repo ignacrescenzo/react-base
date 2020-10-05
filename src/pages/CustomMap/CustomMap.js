@@ -1,33 +1,37 @@
 import React from 'react'
-import { GoogleMap, LoadScript, Marker, MarkerClusterer } from '@react-google-maps/api'
+import { GoogleMap, LoadScript, Marker, MarkerClusterer, InfoWindow } from '@react-google-maps/api' // eslint-disable-line
 
-function CustomMap (props) {
-  const [, setMap] = React.useState(null)
-
+const CustomMap = ({ markers, setMap, zoom, map, selected, setSelected }) => {
   const onLoad = React.useCallback(function callback (map) {
     setMap(map)
-  }, [])
+  }, [setMap])
 
   const onUnmount = React.useCallback(function callback (map) {
     setMap(null)
-  }, [])
+  }, [setMap])
+
+  const handleClickMarker = (e, marker) => {
+    map.panTo(e.latLng)
+    // setSelected(marker)
+  }
 
   return (
     <LoadScript
       googleMapsApiKey='AIzaSyAoWkoyvj8ev5iHj01aOw4VNVxmJ-ZP9tI'
     >
       <GoogleMap
-        mapContainerStyle={{ width: '400px', height: '400px' }}
+        mapContainerStyle={{ width: 600, height: 500 }}
         center={{ lat: -38.416097, lng: -63.616672 }}
         onLoad={onLoad}
-        zoom={3}
+        zoom={zoom}
         onUnmount={onUnmount}
       >
         <MarkerClusterer>
           {
-            (clusterer) => props.markers.slice(1, 5).map((item, index) => {
+            (clusterer) => markers.slice(1, 20).map((item, index) => {
               return (
                 <Marker
+                  onClick={(e) => handleClickMarker(e, item)}
                   clusterer={clusterer}
                   options={{ icon: require('../../theme/maps/pin-1.png') }}
                   key={index}
@@ -38,6 +42,15 @@ function CustomMap (props) {
             )
           }
         </MarkerClusterer>
+        {/* {
+          selected && (
+            <InfoWindow>
+              <div>
+                <h1>InfoWindow</h1>
+              </div>
+            </InfoWindow>
+          )
+        } */}
       </GoogleMap>
     </LoadScript>
   )
