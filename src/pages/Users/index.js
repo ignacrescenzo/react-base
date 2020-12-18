@@ -21,6 +21,11 @@ function Users () {
   }]
 
   const columns2 = [{
+    field: 'id',
+    title: 'Id',
+    hidden: true
+  },
+  {
     field: 'name',
     title: 'Nombre'
   },
@@ -31,6 +36,10 @@ function Users () {
   {
     field: 'document',
     title: 'Documento'
+  },
+  {
+    field: 'companyType',
+    title: 'Tipo de empresa'
   }]
 
   useEffect(() => {
@@ -38,11 +47,14 @@ function Users () {
   }, [])
 
   function getUsers () {
+    console.log(data.usuarios)
     const users = data.usuarios.map(u => {
       return ({
+        id: u.id,
         name: u.nombre,
         lastname: u.apellido,
-        document: u.dni
+        document: u.dni,
+        companyType: u.empresa.nombreTipoEmpresa
       })
     })
     setUsers(users)
