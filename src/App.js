@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 import About from './pages/About/About'
 import Home from './pages/Home/Home'
+import Users from './pages/Users'
 
 function App () {
   return (
@@ -19,6 +20,9 @@ function App () {
           <li>
             <Link to='/about'>About</Link>
           </li>
+          <li>
+            <Link to='/users'>Test users</Link>
+          </li>
         </ul>
 
         <Switch>
@@ -27,6 +31,9 @@ function App () {
           </Route>
           <Route exact path='/'>
             <Home />
+          </Route>
+          <Route exact path='/users'>
+            <Users />
           </Route>
         </Switch>
       </div>
