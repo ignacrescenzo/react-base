@@ -13,13 +13,17 @@ const CustomMap = ({ markers, setMap, zoom, setZoom, map, selected, setSelected,
 
   const handleClickMarker = React.useCallback((e, marker) => {
     map.panTo(e.latLng)
-    // setSelected(marker)
-  }, [map])
+    setSelected(marker)
+  }, [map, setSelected])
 
   const handleZoomChanged = React.useCallback(() => {
     if (!map) return
     setZoom(map.getZoom())
   }, [map, setZoom])
+
+  const handleCloseWindow = React.useCallback(() => {
+    setSelected(null)
+  }, [setSelected])
 
   return (
     <LoadScript
@@ -35,7 +39,7 @@ const CustomMap = ({ markers, setMap, zoom, setZoom, map, selected, setSelected,
       >
         <MarkerClusterer>
           {
-            clusterer => <Marcadores clusterer={clusterer} onClickMarker={handleClickMarker} markers={markers} />
+            clusterer => <Marcadores onCloseWindow={handleCloseWindow} selected={selected} clusterer={clusterer} onClickMarker={handleClickMarker} markers={markers} />
           }
         </MarkerClusterer>
         {/* {
@@ -52,9 +56,13 @@ const CustomMap = ({ markers, setMap, zoom, setZoom, map, selected, setSelected,
   )
 }
 
-const Marcadores = React.memo(({ markers, onClickMarker, clusterer }) => {
+const Marcadores = React.memo(({ markers, onClickMarker, clusterer, selected, onCloseWindow }) => {
   const handleClickMarker = (e, item) => {
     onClickMarker(e, item)
+  }
+
+  const handleCloseWindow = () => {
+    onCloseWindow()
   }
   return (
     markers.map((item, index) => {
@@ -65,7 +73,17 @@ const Marcadores = React.memo(({ markers, onClickMarker, clusterer }) => {
           options={{ icon: require('../../theme/maps/pin-1.png') }}
           key={index}
           position={{ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) }}
-        />
+        >
+          {
+            (selected && selected.id === item.id) && (
+              <InfoWindow onCloseClick={handleCloseWindow}>
+                <div>
+              test
+                </div>
+              </InfoWindow>
+            )
+          }
+        </Marker>
       )
     }
     )

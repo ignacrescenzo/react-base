@@ -8,7 +8,7 @@ import useStyles from './styles'
 const Map = (props) => {
   const classes = useStyles()
   const [markers, setMarkers] = React.useState([])
-  // const [selected, setSelected] = React.useState(null)
+  const [selected, setSelected] = React.useState(null)
   const [map, setMap] = React.useState(null)
   const [zoom, setZoom] = React.useState(3)
   const [center, setCenter] = React.useState({ lat: -38.416097, lng: -63.616672 })
@@ -25,6 +25,7 @@ const Map = (props) => {
     if (!map) return
     map.panTo({ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) })
     setZoom(16)
+    setSelected(item)
     setCenter({ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) })
   }, [map])
 
@@ -35,7 +36,7 @@ const Map = (props) => {
           <Lista markers={markers} onListClicked={handleClickItem} />
         </Grid>
         <Grid item xs={12} md={9}>
-          <CustomMap map={map} center={center} setZoom={setZoom} zoom={zoom} setMap={setMap} markers={markers} />
+          <CustomMap selected={selected} setSelected={setSelected} map={map} center={center} setZoom={setZoom} zoom={zoom} setMap={setMap} markers={markers} />
         </Grid>
       </Grid>
 
