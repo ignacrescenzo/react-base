@@ -42,33 +42,17 @@ const CustomMap = ({ markers, setMap, zoom, setZoom, map, selected, setSelected,
             clusterer => <Marcadores onCloseWindow={handleCloseWindow} selected={selected} clusterer={clusterer} onClickMarker={handleClickMarker} markers={markers} />
           }
         </MarkerClusterer>
-        {/* {
-          selected && (
-            <InfoWindow>
-              <div>
-                <h1>InfoWindow</h1>
-              </div>
-            </InfoWindow>
-          )
-        } */}
       </GoogleMap>
     </LoadScript>
   )
 }
 
 const Marcadores = React.memo(({ markers, onClickMarker, clusterer, selected, onCloseWindow }) => {
-  const handleClickMarker = (e, item) => {
-    onClickMarker(e, item)
-  }
-
-  const handleCloseWindow = () => {
-    onCloseWindow()
-  }
   return (
     markers.map((item, index) => {
       return (
         <Marker
-          onClick={(e) => handleClickMarker(e, item)}
+          onClick={(e) => onClickMarker(e, item)}
           clusterer={clusterer}
           options={{ icon: require('../../theme/maps/pin-1.png') }}
           key={index}
@@ -76,7 +60,7 @@ const Marcadores = React.memo(({ markers, onClickMarker, clusterer, selected, on
         >
           {
             (selected && selected.id === item.id) && (
-              <InfoWindow onCloseClick={handleCloseWindow}>
+              <InfoWindow onCloseClick={onCloseWindow}>
                 <div>
               test
                 </div>

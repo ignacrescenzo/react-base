@@ -47,17 +47,13 @@ const Map = (props) => {
 const Lista = React.memo(({ markers, onListClicked }) => {
   const classes = useStyles()
 
-  const handleClickItem = (item) => {
-    onListClicked(item)
-  }
-
   return (
     <div className={classes.listContainer}>
       <List>
         {
           markers.map((item, index) => {
             return (
-              <ListItem onClick={() => handleClickItem(item)} key={index} button>
+              <ListItem onClick={() => onListClicked(item)} key={index} button>
                 <div>
                   <ListItemText primary={item.nombre} />
                 </div>
