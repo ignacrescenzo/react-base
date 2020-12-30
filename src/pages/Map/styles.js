@@ -7,5 +7,8 @@ export default makeStyles(theme => ({
   },
   gridItem: {
     height: '100%'
+  },
+  selected: {
+    background: 'green'
   }
 }))

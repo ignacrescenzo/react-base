@@ -12,9 +12,9 @@ const CustomMap = ({ markers, setMap, zoom, setZoom, map, selected, setSelected,
   }, [setMap])
 
   const handleClickMarker = React.useCallback((e, marker) => {
-    map.panTo(e.latLng)
+    // map.panTo(e.latLng)
     setSelected(marker)
-  }, [map, setSelected])
+  }, [setSelected])
 
   const handleZoomChanged = React.useCallback(() => {
     if (!map) return

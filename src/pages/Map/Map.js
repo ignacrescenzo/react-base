@@ -15,19 +15,26 @@ const Map = (props) => {
   const [showMarkers, setShowMarker] = React.useState(false)
 
   React.useEffect(() => {
-    window.setTimeout(() => {
-      setMarkers(data.data)
-      setShowMarker(true)
-    }, 3000)
+    // window.setTimeout(() => {
+    setMarkers(data.data)
+    setShowMarker(true)
+    // }, 3000)
   }, [])
 
   const handleClickItem = React.useCallback((item) => {
     if (!map) return
-    map.panTo({ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) })
-    setZoom(16)
+    // map.panTo({ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) })
+    // setZoom(16)
     setSelected(item)
-    setCenter({ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) })
+    // setCenter({ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) })
   }, [map])
+
+  React.useEffect(() => {
+    if (!selected) return
+    map.panTo({ lat: parseFloat(selected.gpsLatitud), lng: parseFloat(selected.gpsLongitud) })
+    setZoom(18)
+    setCenter({ lat: parseFloat(selected.gpsLatitud), lng: parseFloat(selected.gpsLongitud) })
+  }, [selected]) // eslint-disable-line
 
   return (
     !showMarkers ? <CircularProgress /> : (
@@ -46,23 +53,30 @@ const Map = (props) => {
 
 const Lista = React.memo(({ markers, onListClicked }) => {
   const classes = useStyles()
-
+  console.log('aa')
   return (
     <div className={classes.listContainer}>
       <List>
         {
           markers.map((item, index) => {
             return (
-              <ListItem onClick={() => onListClicked(item)} key={index} button>
-                <div>
-                  <ListItemText primary={item.nombre} />
-                </div>
-              </ListItem>
+              <ItemList item={item} index={index} onListClicked={onListClicked} key={index} />
             )
           })
         }
       </List>
     </div>
+  )
+})
+
+const ItemList = React.memo(({ item, onListClicked }) => {
+  // console.log('aa')
+  return (
+    <ListItem onClick={() => onListClicked(item)} button>
+      <div>
+        <ListItemText primary={item.nombre} />
+      </div>
+    </ListItem>
   )
 })
 
