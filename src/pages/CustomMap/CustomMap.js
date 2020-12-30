@@ -1,7 +1,8 @@
 import React from 'react'
 import { GoogleMap, LoadScript, Marker, MarkerClusterer, InfoWindow } from '@react-google-maps/api' // eslint-disable-line
 
-const CustomMap = ({ markers, setMap, zoom, map, selected, setSelected }) => {
+const CustomMap = ({ markers, setMap, zoom, setZoom, map, selected, setSelected, center }) => {
+  // console.log(map)
   const onLoad = React.useCallback(function callback (map) {
     setMap(map)
   }, [setMap])
@@ -10,36 +11,31 @@ const CustomMap = ({ markers, setMap, zoom, map, selected, setSelected }) => {
     setMap(null)
   }, [setMap])
 
-  const handleClickMarker = (e, marker) => {
+  const handleClickMarker = React.useCallback((e, marker) => {
     map.panTo(e.latLng)
     // setSelected(marker)
-  }
+  }, [map])
+
+  const handleZoomChanged = React.useCallback(() => {
+    if (!map) return
+    setZoom(map.getZoom())
+  }, [map, setZoom])
 
   return (
     <LoadScript
-      googleMapsApiKey='AIzaSyAoWkoyvj8ev5iHj01aOw4VNVxmJ-ZP9tI'
+      googleMapsApiKey='AIzaSyAWyl7AXuvIRVvvp221YR9UxiTJmoxP8bk'
     >
       <GoogleMap
         mapContainerStyle={{ width: 600, height: 500 }}
-        center={{ lat: -38.416097, lng: -63.616672 }}
+        center={center}
         onLoad={onLoad}
         zoom={zoom}
+        onZoomChanged={handleZoomChanged}
         onUnmount={onUnmount}
       >
         <MarkerClusterer>
           {
-            (clusterer) => markers.slice(1, 20).map((item, index) => {
-              return (
-                <Marker
-                  onClick={(e) => handleClickMarker(e, item)}
-                  clusterer={clusterer}
-                  options={{ icon: require('../../theme/maps/pin-1.png') }}
-                  key={index}
-                  position={{ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) }}
-                />
-              )
-            }
-            )
+            clusterer => <Marcadores clusterer={clusterer} onClickMarker={handleClickMarker} markers={markers} />
           }
         </MarkerClusterer>
         {/* {
@@ -55,5 +51,25 @@ const CustomMap = ({ markers, setMap, zoom, map, selected, setSelected }) => {
     </LoadScript>
   )
 }
+
+const Marcadores = React.memo(({ markers, onClickMarker, clusterer }) => {
+  const handleClickMarker = (e, item) => {
+    onClickMarker(e, item)
+  }
+  return (
+    markers.map((item, index) => {
+      return (
+        <Marker
+          onClick={(e) => handleClickMarker(e, item)}
+          clusterer={clusterer}
+          options={{ icon: require('../../theme/maps/pin-1.png') }}
+          key={index}
+          position={{ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) }}
+        />
+      )
+    }
+    )
+  )
+})
 
 export default React.memo(CustomMap)

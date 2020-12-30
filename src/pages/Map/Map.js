@@ -11,6 +11,7 @@ const Map = (props) => {
   // const [selected, setSelected] = React.useState(null)
   const [map, setMap] = React.useState(null)
   const [zoom, setZoom] = React.useState(3)
+  const [center, setCenter] = React.useState({ lat: -38.416097, lng: -63.616672 })
   const [showMarkers, setShowMarker] = React.useState(false)
 
   React.useEffect(() => {
@@ -20,40 +21,52 @@ const Map = (props) => {
     }, 3000)
   }, [])
 
-  const handleClickItem = (item) => {
+  const handleClickItem = React.useCallback((item) => {
     if (!map) return
     map.panTo({ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) })
-    // setSelected(item)
-    setZoom(15)
-  }
+    setZoom(16)
+    setCenter({ lat: parseFloat(item.gpsLatitud), lng: parseFloat(item.gpsLongitud) })
+  }, [map])
 
   return (
     !showMarkers ? <CircularProgress /> : (
       <Grid container>
         <Grid className={classes.gridItem} xs={false} item md={3}>
-          <div className={classes.listContainer}>
-            <List>
-              {
-                markers.slice(1, 20).map((item, index) => {
-                  return (
-                    <ListItem onClick={() => handleClickItem(item)} key={index} button>
-                      <div>
-                        <ListItemText primary={item.nombre} />
-                      </div>
-                    </ListItem>
-                  )
-                })
-              }
-            </List>
-          </div>
+          <Lista markers={markers} onListClicked={handleClickItem} />
         </Grid>
         <Grid item xs={12} md={9}>
-          <CustomMap map={map} zoom={zoom} setMap={setMap} markers={markers} />
+          <CustomMap map={map} center={center} setZoom={setZoom} zoom={zoom} setMap={setMap} markers={markers} />
         </Grid>
       </Grid>
 
     )
   )
 }
+
+const Lista = React.memo(({ markers, onListClicked }) => {
+  const classes = useStyles()
+
+  const handleClickItem = (item) => {
+    onListClicked(item)
+  }
+
+  return (
+    <div className={classes.listContainer}>
+      <List>
+        {
+          markers.map((item, index) => {
+            return (
+              <ListItem onClick={() => handleClickItem(item)} key={index} button>
+                <div>
+                  <ListItemText primary={item.nombre} />
+                </div>
+              </ListItem>
+            )
+          })
+        }
+      </List>
+    </div>
+  )
+})
 
 export default Map
